@@ -1,24 +1,15 @@
-import React from 'react';
-
-// Import the `useParams()` hook
+import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { useQuery } from '@apollo/client';
+import { useQuery, useMutation } from '@apollo/client';
+import Auth from 'utils/auth';
 
-import CommentList from '../components/CommentList';
-import CommentForm from '../components/CommentForm';
 
-import { QUERY_BOOK } from '../utils/queries';
+import { REMOVE_BOOK } from '../utils/mutations';
+import { GET_ME} from '../utils/queries'
 
-const SingleThought = () => {
-  // Use `useParams()` to retrieve value of the route parameter `:profileId`
-  const { thoughtId } = useParams();
+const savedBooks = () => {
 
-  const { loading, data } = useQuery(QUERY_BOOK, {
-    // pass URL parameter
-    variables: { thoughtId: thoughtId },
-  });
-
-  const book = data?.book || {};
+  const { loading, error, data } = useQuery(GET_ME);
 
   if (loading) {
     return <div>Loading...</div>;
