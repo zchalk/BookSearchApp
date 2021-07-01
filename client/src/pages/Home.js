@@ -1,34 +1,63 @@
-import React from 'react';
-import { useQuery } from '@apollo/client';
+import React, { useState, useEffect } from 'react';
+import { useQuery, useMutation } from '@apollo/client';
+import Auth from '.../utils/Auth';
+import { googleBooks } from '../utils/google'
+import BookCard from '../components/BookCard';
 
-import ThoughtList from '../components/ThoughtList';
-import ThoughtForm from '../components/ThoughtForm';
 
-import { QUERY_THOUGHTS } from '../utils/queries';
+
+import { SAVE_BOOK } from '../utils/queries';
 
 const Home = () => {
-  const { loading, data } = useQuery(QUERY_THOUGHTS);
-  const thoughts = data?.thoughts || [];
+  const [searchResults, setsearchResults] = useState([]);
+  const [searchInput, setSearchInput] = useState('');
+
+  const [saveBook, { error }] = useMutation(SAVE_BOOK);
+
+  const handleFormSubmit = async (event) => {
+    event.preventDefault();
+    if(!searchInput) {
+      return Error('Please enter a book title')
+    }
+    try {
+      const response = await googleBooks(searchInput);
+      if (!response.ok) {
+        throw Error('Google has failed');
+      } 
+      const books = response.json().map((book) => ({
+        bookId: book.id,
+        authors: book.volumeInfo.authors,
+        title: book.volumeInfo.title,
+        description: book.volumeInfo.description,
+        image: book.volumeInfo.imageLinks?.thumbnail
+      }));
+      setsearchResults(books);
+      setSearchInput('');
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   return (
     <main>
       <div className="flex-row justify-center">
-        <div
-          className="col-12 col-md-10 mb-3 p-3"
-          style={{ border: '1px dotted #1a1a1a' }}
-        >
-          <ThoughtForm />
-        </div>
-        <div className="col-12 col-md-8 mb-3">
-          {loading ? (
-            <div>Loading...</div>
-          ) : (
-            <ThoughtList
-              thoughts={thoughts}
-              title="Some Feed for Thought(s)..."
-            />
-          )}
-        </div>
+      <form onSubmit={handleFormSubmit}>
+        <input
+        className="form-input"
+        placeholder="Book Title"
+        name="searchTitle"
+        type="text"
+        value={searchInput}
+        onChange={handleChange}
+        />
+      </form>
+      </div>
+      <div className="flex-row justify-center">
+        {searchResults.map((book) => {
+          return (
+            <BookCard key={book.bookId}/>
+          )
+        })}
       </div>
     </main>
   );
