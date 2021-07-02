@@ -1,25 +1,26 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-const BookCard = (book) => {
+const BookCard = (props) => {
   
   return (
     <div>
-          <div key={book.bookId} className="card mb-3">
+          <div  className="card mb-3">
             <h4 className="card-header bg-primary text-light p-2 m-0">
-              {book.title} <br />
+              {props.book.title} <br />
               <span style={{ fontSize: '1rem' }}>
-                 by {book.author}
+                 by {props.book.author}
               </span>
             </h4>
             <div className="card-body bg-light p-2">
-              <p>{book.description}</p>
+              <p>{props.book.description}</p>
             </div>
             <Link
               className="btn btn-primary btn-block btn-squared"
-              href={`${book.link}`}
+              href={`${props.book.link}`}
             >
             </Link>
+            <button onClick={(event)=>props.saveBookEvent(event, props.book)}>Save</button>
           </div>
     </div>
   );

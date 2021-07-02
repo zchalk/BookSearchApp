@@ -42,16 +42,17 @@ const resolvers = {
 
       return { token, user };
     },
-    addBook: async (parent, args, context) => {
-      if (context.user) {
-        const Book = await Book.create({ args });
+    saveBook: async (parent, args, context) => {
+      console.log(args)
+      // if (context.user) {
+        // const book = await Book.create({ args });
         await User.findOneAndUpdate(
-          {_id: context.user._id},
-          { $addToSet: { books: Book._id }},
+          {_id: "60de570b3e0e0415f8cc20c9"},
+          { $addToSet: { savedBooks: {...args} }},
           { new: true, runValidators: true}, 
       );
-      return ?;
-    }
+      return ;
+    // }
 
       
     },
@@ -60,11 +61,11 @@ const resolvers = {
       if (context.user) {
         await User.findOneAndUpdate(
           {_id: context.user._id},
-          {$pull: { books: {bookId} } },
+          {$pull: { savedBooks: {bookId} } },
           {new: true}
         )
       }
-      return ?;
+      return ;
     },
   },
 };
