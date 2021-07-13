@@ -8,11 +8,12 @@ const resolvers = {
       return User.find();
     },
     user: async (parent,  {args}) => {
-      return User.findOne({ args }).populate('books');
+      return User.findOne({ args }).populate('savedBooks');
     },
     me: async (parent, args, context) => {
+      console.log(context.user)
       if (context.user) {
-        return User.findOne({_id: context.user._id}).populate('books');
+        return User.findOne({_id: "60de570b3e0e0415f8cc20c9"}).populate('savedBooks');
       } else {
         throw new AuthenticationError('You must be logged in.')
       }
@@ -44,20 +45,19 @@ const resolvers = {
     },
     saveBook: async (parent, args, context) => {
       console.log(args)
-      // if (context.user) {
-        // const book = await Book.create({ args });
+      if (context.user) {
         await User.findOneAndUpdate(
-          {_id: "60de570b3e0e0415f8cc20c9"},
+          {_id: context.user._id},
           { $addToSet: { savedBooks: {...args} }},
           { new: true, runValidators: true}, 
       );
       return ;
-    // }
+    }
 
       
     },
     
-    removeBook: async (parent, { bookId }, context) => {
+    deleteBook: async (parent, { bookId }, context) => {
       if (context.user) {
         await User.findOneAndUpdate(
           {_id: context.user._id},
