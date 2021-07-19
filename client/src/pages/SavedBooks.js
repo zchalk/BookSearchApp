@@ -1,19 +1,27 @@
 import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useQuery, useMutation } from '@apollo/client';
-import BookCard from '../components/BookCard';
+import SavedBook from '../components/SavedBook';
 import Auth from '../utils/auth';
 
 
 import { REMOVE_BOOK } from '../utils/mutations';
-import { GET_ME} from '../utils/queries'
+import { GET_ME } from '../utils/queries'
 
 const SavedBooks = () => {
 
   const { loading, error, data } = useQuery(GET_ME);
-  console.log(data?.me.savedBooks.title);
-//   const [removeBook, { error }] = useMutation(REMOVE_BOOK);
+  const [removeBook] = useMutation(REMOVE_BOOK);
 
+  const removeBookEvent = async (event, bookId) => {
+    try {
+      console.log(bookId);
+      await removeBook({
+        variables: {bookId}
+      });
+  } catch (err) {
+    console.log(err);
+  }};
  
   
   return (
@@ -24,7 +32,7 @@ const SavedBooks = () => {
       </h3>
     { loading?  <div>Loading...</div>:
       data?.me.savedBooks.map((book) => {
-          return (<BookCard key={book.bookId}  book={book}/>)
+          return (<SavedBook key={book.bookId} removeBookEvent={removeBookEvent} book={book}/>)
       })}
     </div>
   );

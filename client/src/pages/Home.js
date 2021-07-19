@@ -28,9 +28,10 @@ const Home = () => {
       console.log(data);
       const books = data.items.map((book) => ({
         bookId: book.id,
-        authors: book.volumeInfo.authors,
+        authors: book.volumeInfo.authors[0],
         title: book.volumeInfo.title,
         description: book.volumeInfo.description,
+        link: book.volumeInfo.infoLink,
         image: book.volumeInfo.imageLinks?.thumbnail
       }));
       setsearchResults(books);
@@ -41,10 +42,12 @@ const Home = () => {
   };
   const saveBookEvent = async (event, book) => {
     try {
-      const { data } = saveBook({
+
+      await saveBook({
         variables: {...book},
       });
-      console.log(data);
+      console.log(data, "line 47");
+      console.log(book)
   } catch (err) {
     throw err;
   }};

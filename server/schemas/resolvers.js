@@ -13,7 +13,7 @@ const resolvers = {
     me: async (parent, args, context) => {
       console.log(context.user)
       if (context.user) {
-        return User.findOne({_id: "60de570b3e0e0415f8cc20c9"}).populate('savedBooks');
+        return User.findOne({_id: context.user._id}).populate('savedBooks');
       } else {
         throw new AuthenticationError('You must be logged in.')
       }
@@ -40,34 +40,38 @@ const resolvers = {
       }
 
       const token = signToken(user);
+      console.log(user);console.log(token)
 
       return { token, user };
     },
     saveBook: async (parent, args, context) => {
-      console.log(args)
       if (context.user) {
-        await User.findOneAndUpdate(
+        const update = await User.findOneAndUpdate(
           {_id: context.user._id},
           { $addToSet: { savedBooks: {...args} }},
           { new: true, runValidators: true}, 
       );
-      return ;
+      console.log(update)
+      return update;
     }
 
       
     },
     
-    deleteBook: async (parent, { bookId }, context) => {
+    removeBook: async (parent, { bookId }, context) => {
       if (context.user) {
-        await User.findOneAndUpdate(
-          {_id: context.user._id},
-          {$pull: { savedBooks: {bookId} } },
-          {new: true}
-        )
+          const updatedUser = await User.findOneAndUpdate(
+              { _id: context.user._id },
+              { $pull: { savedBooks: { bookId } } },
+              { new: true }
+          );
+
+          return updatedUser;
       }
-      return ;
+
+      throw new AuthenticationError('You need to be logged in!');
     },
-  },
+}
 };
 
 module.exports = resolvers;
