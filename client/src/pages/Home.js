@@ -25,7 +25,6 @@ const Home = () => {
         throw Error('Google has failed');
       }
       const data = await response.json();
-      console.log(data);
       const books = data.items.map((book) => ({
         bookId: book.id,
         authors: book.volumeInfo.authors[0],
@@ -46,8 +45,6 @@ const Home = () => {
       await saveBook({
         variables: {...book},
       });
-      console.log(data, "line 47");
-      console.log(book)
   } catch (err) {
     throw err;
   }};

@@ -25,7 +25,7 @@ const Signup = () => {
 
   const handleFormSubmit = async (event) => {
     event.preventDefault();
-    console.log(formState);
+
 
     try {
       const { data } = await addUser({
@@ -44,12 +44,7 @@ const Signup = () => {
         <div className="card">
           <h4 className="card-header bg-dark text-light p-2">Sign Up</h4>
           <div className="card-body">
-            {/* {data ? (
-              <p>
-                Success! You may now head{' '}
-                <Link to="/">back to the homepage.</Link>
-              </p>
-            ) : ( */}
+          
               <form onSubmit={handleFormSubmit}>
                 <input
                   className="form-input"
@@ -83,7 +78,7 @@ const Signup = () => {
                   Submit
                 </button>
               </form>
-            {/* )} */}
+       
 
             {error && (
               <div className="my-3 p-3 bg-danger text-white">

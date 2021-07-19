@@ -11,7 +11,6 @@ const resolvers = {
       return User.findOne({ args }).populate('savedBooks');
     },
     me: async (parent, args, context) => {
-      console.log(context.user)
       if (context.user) {
         return User.findOne({_id: context.user._id}).populate('savedBooks');
       } else {
@@ -40,7 +39,7 @@ const resolvers = {
       }
 
       const token = signToken(user);
-      console.log(user);console.log(token)
+      
 
       return { token, user };
     },
@@ -51,7 +50,7 @@ const resolvers = {
           { $addToSet: { savedBooks: {...args} }},
           { new: true, runValidators: true}, 
       );
-      console.log(update)
+      
       return update;
     }
 
@@ -60,13 +59,13 @@ const resolvers = {
     
     removeBook: async (parent, { bookId }, context) => {
       if (context.user) {
-          const updatedUser = await User.findOneAndUpdate(
+          const update = await User.findOneAndUpdate(
               { _id: context.user._id },
               { $pull: { savedBooks: { bookId } } },
               { new: true }
           );
 
-          return updatedUser;
+          return update;
       }
 
       throw new AuthenticationError('You need to be logged in!');

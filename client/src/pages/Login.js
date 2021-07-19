@@ -22,7 +22,6 @@ const Login = (props) => {
   // submit form
   const handleFormSubmit = async (event) => {
     event.preventDefault();
-    console.log(formState);
     try {
       const { data } = await login({
         variables: { ...formState },
@@ -47,12 +46,6 @@ const Login = (props) => {
         <div className="card">
           <h4 className="card-header bg-dark text-light p-2">Login</h4>
           <div className="card-body">
-            {/* {data ? (
-              <p>
-                Success! You may now head{' '}
-                <Link to="/">back to the homepage.</Link>
-              </p>
-            ) : ( */}
               <form onSubmit={handleFormSubmit}>
                 <input
                   className="form-input"
@@ -78,7 +71,6 @@ const Login = (props) => {
                   Submit
                 </button>
               </form>
-            {/* )} */}
 
             {error && (
               <div className="my-3 p-3 bg-danger text-white">

@@ -15,7 +15,6 @@ const SavedBooks = () => {
 
   const removeBookEvent = async (event, bookId) => {
     try {
-      console.log(bookId);
       await removeBook({
         variables: {bookId}
       });
